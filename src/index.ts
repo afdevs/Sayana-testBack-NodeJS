@@ -12,6 +12,7 @@ app.use(cors());
 
 try {
     (async ()=>{
+        console.log(serverConfig.mongoURI)
         const db = await mongoose.connect(`${serverConfig.mongoURI}${serverConfig.mongoDB}`);   
         console.log(
             'Database is connected to:',
