@@ -173,17 +173,13 @@ export async function get(req: Request, res: Response){
 
 export async function remove (req: Request, res: Response){
     try {
-        console.log(res.locals.jwt?.email)
-        if(res.locals.jwt?.email){
-            throw new Error("Erruer lors de la déconnexion");
-        }   
         const isUserExist= await User.findOne({email: res.locals.jwt.email});
 
         if(!isUserExist){
             throw new Error("Utilisateur non trouvé");
         }
 
-        // const userDeleted= await User.deleteOne({email:res.locals.jwt.email});
+        const userDeleted= await User.deleteOne({email:res.locals.jwt.email});
         res.status(200).json({
             error:false,
             user: "L'utilisateur a été déconnecté avec succès"
