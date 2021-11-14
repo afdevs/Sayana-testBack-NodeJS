@@ -82,9 +82,9 @@ function register(req, res) {
                     throw new Error("Une erreur est apparue lors de la génération du token");
                 }
                 else if (token) {
-                    res.status(200).json({
+                    res.status(20).json({
                         error: false,
-                        message: "L'utilisateur a été authentifié avec succès",
+                        message: "L'utilisateur a été créé avec succès et un token viens de lui est attribué",
                         tokens: {
                             token: token,
                             refreshToken: '',
@@ -95,7 +95,7 @@ function register(req, res) {
             });
             res.status(201).json({
                 error: false,
-                message: "L'utilisateur a bien été crée avec succès",
+                message: "L'utilisateur a bien été créé avec succès",
                 tokens: {
                     token: '',
                     refreshToken: '',

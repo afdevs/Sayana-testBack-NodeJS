@@ -23,6 +23,7 @@ app.use(express_1.default.json());
 app.use((0, cors_1.default)());
 try {
     (() => __awaiter(void 0, void 0, void 0, function* () {
+        console.log(server_1.serverConfig.mongoURI);
         const db = yield mongoose_1.default.connect(`${server_1.serverConfig.mongoURI}${server_1.serverConfig.mongoDB}`);
         console.log('Database is connected to:', db.connection.host, db.connection.name);
     }))();
