@@ -10,6 +10,7 @@ export const signJWT=(user:IUser, callback: (error: Error | null, token: string 
     try {
         jwt.sign(
             {
+                id: user._id,
                 firstname: user.firstname,
                 email: user.email
             }, 

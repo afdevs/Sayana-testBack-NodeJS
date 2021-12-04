@@ -4,6 +4,12 @@ import bcrypt from 'bcryptjs';
 import { IUser } from "src/interfaces/User";
 import {signJWT} from '../middlewares/signJWT';
 import { destroyJWT } from "../middlewares/destroyJWT";
+import { isEmailValid } from "../utils/utils";
+
+
+export function loginView(req: Request, res: Response){
+    res.render("login", {});
+};
 
 export async function login(req: Request, res: Response){
     const { email, password } = req.body as IUser;
@@ -40,31 +46,57 @@ export async function login(req: Request, res: Response){
         }
         
     } catch (error: any) {
-        res.status(401).json({
+        res.render("login", {
             error: true,
+            status: 400,
             message: error.message,
+            user:{email},
             tokens:{
                 token:'',
                 refreshToken: '',
                 createdAt: ''
             }
-        })
+        });
+        // res.status(401).json({
+        //     error: true,
+        //     message: error.message,
+        //     tokens:{
+        //         token:'',
+        //         refreshToken: '',
+        //         createdAt: ''
+        //     }
+        // })
     }
+}
+
+
+//REGISTER SECTION
+export function registerView (req: Request, res: Response) {
+    res.render("register", {});
 }
 
 export async function register(req: Request, res: Response){
     const user = req.body as IUser;  
     try {  
         if(!isUserDataValidate(user)){
-            throw new Error("L'une ou plusiseurs des données obligatoire sont manquantes");
+            throw new Error("Une ou plusieurs des données obligatoire sont manquantes");
+        }
+        
+        if(!isEmailValid(user.email)){
+
+            throw new Error("Une ou plusieurs des données sont érronées");
+        }
+        if(user.password !== user.confirmPassword){
+            throw new Error("Les deux mot de passe sont différents");
         }
 
         const isUserExist= await User.findOne({email: user.email});
         if(isUserExist){
-            throw new Error("Votre email n'est pas correcte");
+            throw new Error("Votre e-mail a déjà été utilisé");
         }
         const hashedPassword = bcrypt.hashSync(user.password, 10);
 
+    
         await User.create({
             ...user,
             date_naissnace: new Date(user.date_naissance),
@@ -76,7 +108,7 @@ export async function register(req: Request, res: Response){
                 throw new Error("Une erreur est apparue lors de la génération du token");
                 
             }else if(token){
-                res.status(20).json({
+                res.status(201).json({
                     error: false,
                     message: "L'utilisateur a été créé avec succès et un token viens de lui est attribué",
                     tokens:{
@@ -87,26 +119,37 @@ export async function register(req: Request, res: Response){
                 })
             }
         });
-
-        res.status(201).json({
-            error:false,
-            message: "L'utilisateur a bien été créé avec succès",
-            tokens: {
-                token:'',
-                refreshToken: '',
-                createdAt: Date.now()
-            }
-        })
+        res.redirect(201,'/login')
+        // res.status(201).json({
+        //     error:false,
+        //     message: "L'utilisateur a bien été créé avec succès",
+        //     tokens: {
+        //         token:'',
+        //         refreshToken: '',
+        //         createdAt: Date.now()
+        //     }
+        // })
     } catch (error: any) {
-        res.status(401).json({
+        res.render("register", {
             error: true,
+            user: user,
+            status: 400,
             message: error.message,
             tokens:{
                 token:'',
                 refreshToken: '',
                 createdAt: ''
             }
-        })
+        });
+        // res.status(401).json({
+        //     error: true,
+        //     message: error.message,
+        //     tokens:{
+        //         token:'',
+        //         refreshToken: '',
+        //         createdAt: ''
+        //     }
+        // })
     }
 }
 
@@ -140,7 +183,9 @@ export async function update(req: Request, res: Response){
 
 export async function getAll(req: Request, res: Response){
     try {
-        const users= await User.find({}, {password: 0});
+        const users= await User.find({}, {password: 0}).populate({
+            path: 'bankCards'
+        })
         
         res.status(200).json({
             error:false,
