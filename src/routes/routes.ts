@@ -24,11 +24,11 @@ export class Routes {
         app.route('/user/cards').get(validateToken, banks.getAll);
 
         //song
-        app.route('/songs').get(validateToken, users.getAll);
-        app.route('/songs/:id').get(validateToken, users.getAll);
+        app.route('/songs').get(validateToken, songs.getAll);
+        app.route('/songs/:id').get(validateToken, songs.get);
 
         //bill
-        app.route('/bills').get(validateToken, users.getAll);
-        app.route('/bills/:id').get(validateToken, users.getAll);
+        app.route('/bills').get(validateToken, bills.getAll);
+        app.route('/bills/:id').get(validateToken, bills.get);
     }
 }
