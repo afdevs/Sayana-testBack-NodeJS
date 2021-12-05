@@ -12,6 +12,7 @@ const signJWT = (user, callback) => {
     const expirationTimeInSeconds = Math.floor(expirationTime / 1000);
     try {
         jsonwebtoken_1.default.sign({
+            id: user._id,
             firstname: user.firstname,
             email: user.email
         }, JWT_1.jwtConfig.secret, {

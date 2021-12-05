@@ -16,6 +16,7 @@ exports.remove = exports.get = exports.getAll = exports.update = exports.registe
 const User_1 = require("../models/User");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const signJWT_1 = require("../middlewares/signJWT");
+const utils_1 = require("../utils/utils");
 function login(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const { email, password } = req.body;
@@ -69,11 +70,17 @@ function register(req, res) {
         const user = req.body;
         try {
             if (!isUserDataValidate(user)) {
-                throw new Error("L'une ou plusiseurs des données obligatoire sont manquantes");
+                throw new Error("Une ou plusieurs des données obligatoire sont manquantes");
+            }
+            if (!(0, utils_1.isEmailValid)(user.email)) {
+                throw new Error("Une ou plusieurs des données sont érronées");
+            }
+            if (user.password !== user.confirmPassword) {
+                throw new Error("Les deux mot de passe sont différents");
             }
             const isUserExist = yield User_1.User.findOne({ email: user.email });
             if (isUserExist) {
-                throw new Error("Votre email n'est pas correcte");
+                throw new Error("Votre e-mail a déjà été utilisé");
             }
             const hashedPassword = bcryptjs_1.default.hashSync(user.password, 10);
             yield User_1.User.create(Object.assign(Object.assign({}, user), { date_naissnace: new Date(user.date_naissance), password: hashedPassword }));
@@ -82,7 +89,7 @@ function register(req, res) {
                     throw new Error("Une erreur est apparue lors de la génération du token");
                 }
                 else if (token) {
-                    res.status(20).json({
+                    res.status(201).json({
                         error: false,
                         message: "L'utilisateur a été créé avec succès et un token viens de lui est attribué",
                         tokens: {
@@ -149,7 +156,9 @@ exports.update = update;
 function getAll(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const users = yield User_1.User.find({}, { password: 0 });
+            const users = yield User_1.User.find({}, { password: 0 }).populate({
+                path: 'bankCards'
+            });
             res.status(200).json({
                 error: false,
                 users

@@ -17,16 +17,31 @@ const routes_1 = require("./routes/routes");
 const cors_1 = __importDefault(require("cors"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const server_1 = require("./configs/server");
+const utils_1 = require("./utils/utils");
+const express_session_1 = __importDefault(require("express-session"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
+var session;
 const app = (0, express_1.default)();
 const route = new routes_1.Routes();
 app.use(express_1.default.json());
+app.use(express_1.default.urlencoded({ extended: false }));
 app.use((0, cors_1.default)());
+app.use((0, cookie_parser_1.default)());
 try {
     (() => __awaiter(void 0, void 0, void 0, function* () {
         console.log(server_1.serverConfig.mongoURI);
-        const db = yield mongoose_1.default.connect(`${server_1.serverConfig.mongoURI}${server_1.serverConfig.mongoDB}`);
+        const db = yield mongoose_1.default.connect(`${server_1.serverConfig.mongoURI}`);
         console.log('Database is connected to:', db.connection.host, db.connection.name);
     }))();
+    app.set("view engine", "ejs");
+    const oneDay = 1000 * 60 * 60 * 24;
+    app.use((0, express_session_1.default)({
+        secret: "supersecrettoken",
+        saveUninitialized: true,
+        cookie: { maxAge: oneDay },
+        resave: false
+    }));
+    (0, utils_1.initDataForTesting)();
     route.routes(app);
     const port = server_1.serverConfig.port || 8000;
     app.listen(port, () => {

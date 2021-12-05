@@ -17,7 +17,9 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const JWT_1 = require("../configs/JWT");
 function validateToken(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        const token = req.headers.token;
+        const authHeader = req.headers.authorization;
+        const token = authHeader && authHeader.split(' ')[1];
+        console.log('token', authHeader);
         if (token) {
             jsonwebtoken_1.default.verify(token, JWT_1.jwtConfig.secret, (error, decoded) => {
                 if (error) {
