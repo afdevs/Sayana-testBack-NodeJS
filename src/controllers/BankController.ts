@@ -9,7 +9,6 @@ export async function saveBankCard(req: Request, res: Response){
     const data = req.body as IBankCard;
     data.user=res.locals.jwt.id;
     try {
-        console.log(data, isBankDataValidate(data))
         if(!isBankDataValidate(data)){
             throw new Error("Une ou plusieurs des données obligatoire sont manquantes");
         }

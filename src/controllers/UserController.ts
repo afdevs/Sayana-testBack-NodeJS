@@ -6,11 +6,6 @@ import {signJWT} from '../middlewares/signJWT';
 import { destroyJWT } from "../middlewares/destroyJWT";
 import { isEmailValid } from "../utils/utils";
 
-
-export function loginView(req: Request, res: Response){
-    res.render("login", {});
-};
-
 export async function login(req: Request, res: Response){
     const { email, password } = req.body as IUser;
     try {
@@ -46,33 +41,16 @@ export async function login(req: Request, res: Response){
         }
         
     } catch (error: any) {
-        res.render("login", {
+        res.status(401).json({
             error: true,
-            status: 400,
             message: error.message,
-            user:{email},
             tokens:{
                 token:'',
                 refreshToken: '',
                 createdAt: ''
             }
-        });
-        // res.status(401).json({
-        //     error: true,
-        //     message: error.message,
-        //     tokens:{
-        //         token:'',
-        //         refreshToken: '',
-        //         createdAt: ''
-        //     }
-        // })
+        })
     }
-}
-
-
-//REGISTER SECTION
-export function registerView (req: Request, res: Response) {
-    res.render("register", {});
 }
 
 export async function register(req: Request, res: Response){
@@ -119,37 +97,25 @@ export async function register(req: Request, res: Response){
                 })
             }
         });
-        res.redirect('/login')
-        // res.status(201).json({
-        //     error:false,
-        //     message: "L'utilisateur a bien été créé avec succès",
-        //     tokens: {
-        //         token:'',
-        //         refreshToken: '',
-        //         createdAt: Date.now()
-        //     }
-        // })
+        res.status(201).json({
+            error:false,
+            message: "L'utilisateur a bien été créé avec succès",
+            tokens: {
+                token:'',
+                refreshToken: '',
+                createdAt: Date.now()
+            }
+        })
     } catch (error: any) {
-        res.render("register", {
+        res.status(401).json({
             error: true,
-            user: user,
-            status: 400,
             message: error.message,
             tokens:{
                 token:'',
                 refreshToken: '',
                 createdAt: ''
             }
-        });
-        // res.status(401).json({
-        //     error: true,
-        //     message: error.message,
-        //     tokens:{
-        //         token:'',
-        //         refreshToken: '',
-        //         createdAt: ''
-        //     }
-        // })
+        })
     }
 }
 

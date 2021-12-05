@@ -4,7 +4,10 @@ import cors from 'cors';
 import mongoose from "mongoose";
 import { serverConfig } from './configs/server';
 import { initDataForTesting } from './utils/utils';
-// import passport from 'passport';
+import sessions from 'express-session';
+import cookieParser from 'cookie-parser';
+
+var session;
 
 const app= express();
 
@@ -12,6 +15,7 @@ const route= new Routes();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
+app.use(cookieParser());
 
 try {
     (async ()=>{
@@ -25,9 +29,14 @@ try {
     })();
 
     app.set("view engine", "ejs");
+    const oneDay = 1000 * 60 * 60 * 24;
+    app.use(sessions({
+        secret: "supersecrettoken",
+        saveUninitialized:true,
+        cookie: { maxAge: oneDay },
+        resave: false 
+    }));
 
-    // app.use(passport.initialize());
-    // app.use(passport.session());
     initDataForTesting();
     route.routes(app)
 

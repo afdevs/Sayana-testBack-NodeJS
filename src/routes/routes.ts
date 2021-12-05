@@ -9,8 +9,6 @@ import { destroyJWT } from '../middlewares/destroyJWT';
 export class Routes {
     public routes(app: Application){
         //views routes
-        app.route('/login').get(users.loginView);
-        app.route('/register').get(users.registerView);
         app.route('/dashboard').get(dashboard.dashboardView);
 
         //login
