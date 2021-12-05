@@ -3,8 +3,9 @@ import jwt from 'jsonwebtoken';
 import { jwtConfig } from "../configs/JWT";
 
 export async function validateToken(req: Request, res: Response, next: NextFunction){
-    const token:string = req.headers.token as string;
-
+    const authHeader:string = req.headers.authorization as string;
+    const token=authHeader && authHeader.split(' ')[1];
+    console.log('token', authHeader)
     if(token){
         jwt.verify(token, jwtConfig.secret, (error, decoded)=>{
             if(error){
