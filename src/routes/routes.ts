@@ -4,15 +4,19 @@ import * as users from '../controllers/UserController';
 import * as banks from '../controllers/BankController';
 import * as songs from '../controllers/SongController';
 import * as bills from '../controllers/BillController';
+import * as dashboard from '../controllers/DashboardController';
 import { destroyJWT } from '../middlewares/destroyJWT';
 export class Routes {
     public routes(app: Application){
-        //login
+        //views routes
         app.route('/login').get(users.loginView);
+        app.route('/register').get(users.registerView);
+        app.route('/dashboard').get(dashboard.dashboardView);
+
+        //login
         app.route('/login').post(users.login);
 
         //register
-        app.route('/register').get(users.registerView);
         app.route('/register').post(users.register);
 
         //users

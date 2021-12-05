@@ -1,0 +1,69 @@
+ <%- include('layout.ejs'); %>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <h2>LISTE DES FATURES ET SONGS</h2> 
+            <div class="billsList mt-4">
+                <h4>Liste des factures</h4>
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Date de paiement</th>
+                        <th scope="col">Montant HT</th>
+                        <th scope="col">Montant TTC</th>
+                        <th scope="col">Source</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <% if(bills) { 
+                            bills.forEach(function(bill){
+                        %>
+                            <tr>
+                                <td>
+                                    <script type="text/javascript">
+                                        document.write(
+                                        new Date("<%= bill.date_payment %>").toLocaleDateString()
+                                        );
+                                    </script>
+                                </td>
+
+                                <td><%= bill.montan_ht %></td>
+                                <td><%= bill.montant_ttc %></td>
+                                <td><%= bill.source %></td>
+                            </tr>
+                        <%  })  } %>
+                    </tbody>
+              </table>
+            </div>
+             
+            <div class="billsList mt-4">
+                <h4>Liste des songs</h4>                
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Titre du song</th>
+                        <th scope="col">URL</th>
+                        <th scope="col">Durée (min)</th>
+                        <th scope="col">Format</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <% if(songs) { 
+                            songs.forEach(function(song){
+                        %>
+                            <tr>
+                                <td><%= song.name %></td>
+                                <td><%= song.url %></td>
+                                <td><%= song.time %></td>
+                                <td><%= song.type %></td>
+                            </tr>
+                        <%  })  } %>
+                    </tbody>
+              </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

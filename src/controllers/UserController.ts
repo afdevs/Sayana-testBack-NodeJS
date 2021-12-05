@@ -119,7 +119,7 @@ export async function register(req: Request, res: Response){
                 })
             }
         });
-        res.redirect(201,'/login')
+        res.redirect('/login')
         // res.status(201).json({
         //     error:false,
         //     message: "L'utilisateur a bien été créé avec succès",
